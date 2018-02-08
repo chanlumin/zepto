@@ -1,2 +1,2 @@
 # zepto
-learn underscore
+learn zepto
