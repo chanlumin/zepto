@@ -6,7 +6,14 @@ var Zepto = (function () {
   var zepto = {
     init :  function (selector, context) {
 
+    },
+    Z : function (dom, selector) {
+      return new Z(dom, selector)
     }
+  }
+
+  var Z = function (dom, selector) {
+
   }
   return $
 })()
