@@ -116,38 +116,90 @@ var Zepto = (function () {
     // 1 如果是空的话 用String包装obj 取出class2type的值 默认是object
     return obj == null ? String(obj) : class2type[toString.call(obj)] || 'object'
   }
+  $.type = type
   
   function isFunction(obj) {
     return type(obj) == 'function'
   }
+  $.isFunction = isFunction
+
+  /**
+   * 先调用现代浏览器默认的isArray 没有再通过instanceof来判断
+   * @type {*|Function}
+   */
+  var isArray = Array.isArray || function (object) {
+    return object instanceof Array
+  }
+  $.isArray = isArray
   
   function isWindow(obj) {
     // 判断是否是window的话即使 obj.window == obj
     return obj != null && obj == obj.window
   }
+  $.isWindow = isWindow
   
   function isDocument(obj) {
     // 判断Document主要是通过DOCUMENT_NODE来判断的
     return obj != null && obj.nodeType == obj.DOCUMENT_NODE
   }
+  $.isDocument = isDocument
   
   function isObject(obj) {
     type(obj) == 'object'
   }
+  $.isObject = isObject
 
 
-  $.type = type
   /**
    * 判断对象是否是对象常量{} 获取是通过new Object产生的 如果是 new Date
    * 之类的对象就不是plainObject
    * @param obj
-   *
+   * obj的原型一定要是Object.prototype的原型
    * 返回Object
    */
   function isPlainObject(obj) {
     // 首先他是一个对象 不是window对象 并且对象的原型和Object的对象的原型一样
     return isObject(obj) && !isWindow(obj) && Object.getPrototypeOf(obj) == Object.prototype
   }
+  
+  
+  $.isPlainObject = isPlainObject
+
+
+  /**
+   * 判断是否是空对象
+   * @param obj
+   * @returns {boolean}
+   *
+   *  空对象只的是 没有任何属性包括继承过来的
+   *  换另外一种说法就是没有任何的属性可以枚举
+   */
+  $.isEmptyObject = function (obj) {
+    for(var name in obj) return false
+    return true
+  }
+
+  /**
+   * 判断是否是数字
+   * @param val
+   * @returns {boolean}
+   */
+  $.isNumeric = function (val) {
+    var num = Number(val),
+      type =  typeof val
+
+
+    return val != null &&
+      type != 'boolean' &&
+      // 不是String 类型的如果是String的话 那么最好要是val.length
+      // $.isNumeric('2')=>true $.isNumeric('')=>false
+      (type != 'string' || val.length) &&
+      !isNaN(num) &&
+      isFinite(num) ||
+      false
+  }
+
+
 
   /**
    * 判断obj是否是类数组
