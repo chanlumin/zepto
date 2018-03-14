@@ -199,6 +199,16 @@ var Zepto = (function () {
       false
   }
 
+  /**
+   * 判断指定元素在数组中的索引位置
+   * @param el 指定元素
+   * @param array 传入的数组
+   * @param index 从index位置开始的索引
+   */
+  $.inArray = function (el, array, index) {
+    return [].indexOf.call(array, el, index)
+  }
+
 
 
   /**
