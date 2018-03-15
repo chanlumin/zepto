@@ -1,7 +1,8 @@
 var Zepto = (function () {
 
   var emptyArray =  [],
-    slice = emptyArray.slice
+    slice = emptyArray.slice,
+    concat = emptyArray.concat
   var zepto  =  {}
   var $ = function (selector, context) {
     // 1 实际上班zepto.init new的是一个zepto.Z 函数
@@ -209,7 +210,68 @@ var Zepto = (function () {
     return [].indexOf.call(array, el, index)
   }
 
+  /**
+   *  对字符串进行驼峰化 --home-hello => HomeHello
+   *  hello-world => HelloWorld
+   * @param str
+   * @returns {string|XML|void|*}
+   */
+  var camelize = function (str) {
+    return str.replace(/-+(.)?/g, function (match, chr) {
+      //  备注: chr其实就是补获对字符串
+      return chr ? chr.toUpperCase() : ''
+    })
+  }
 
+  $.camelize = camelize
+
+
+  /**
+   * 处理字符串的两边空白
+   * @param str
+   * @returns {string}
+   */
+  $.trim = function (str) {
+    return str == null ? '' : String.prototype.trim.call(str)
+  }
+
+
+  /**
+   * 空函数
+   */
+  $.noop = function () {}
+
+
+  /**
+   * 将数组进行展平
+   * @param array
+   * @returns {*}
+   */
+  flatten = function (array) {
+    // 如果数组的长度大于0的话 才需要展平
+    return array.length > 0 ? $.fn.concat.apply([], array) : array
+  }
+  
+  $.map = function (elements, callback) {
+    var value, values = [],index, key
+    
+    if(likeArray(elements)) {
+      for(index = 0,  length = elements.length; index < length; index++) {
+        value = callback(elements[index], index) 
+        if(value != null) {
+          values.push(value)
+        }
+      }
+    } else {
+      for(var key in elements) {
+        value = callback(elements[key], key)
+        if(value != null) {
+          value.push(value)
+        }
+      }
+    }
+    return flatten(values)
+  }
 
   /**
    * 判断obj是否是类数组
@@ -253,6 +315,7 @@ var Zepto = (function () {
 
 
   $.fn =  {
+    concat : emptyArray.concat,
     each : function () {},
     map : function () {},
     hide: function () {
