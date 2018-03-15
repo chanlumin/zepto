@@ -290,6 +290,28 @@ var Zepto = (function () {
     if(window.JSON) $.parseJSON = JSON.parse
   }
 
+
+  /**
+   * 判断一个节点是否是另一个节点的祖先节点
+   * @param obj
+   * @returns {boolean}
+   */
+  $.contains = document.documentElement.contains ?
+    // 如果存在contains的话直接调用浏览器的api
+    function (parent, node) {
+      return parent !=node && parent.contains(node)
+    } :
+    // 如果不存在的话就向上遍历
+    function (parent, node) {
+      while (node && (node = node.parent)) {
+        if(node === parent) {
+          return true
+        }
+      }
+      return false
+    }
+
+
   /**
    * 判断obj是否是类数组
    *
