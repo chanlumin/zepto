@@ -299,6 +299,7 @@ var Zepto = (function () {
   $.contains = document.documentElement.contains ?
     // 如果存在contains的话直接调用浏览器的api
     function (parent, node) {
+      // parent不能等于自己
       return parent !=node && parent.contains(node)
     } :
     // 如果不存在的话就向上遍历
@@ -310,6 +311,54 @@ var Zepto = (function () {
       }
       return false
     }
+
+  /**
+   * 把属性一个一个一个从source中复制到target中去
+   * deep 为true的话就是深拷贝=> 把数组和对象也复制一份 复制过去
+   *
+   * 之所以要抽象出这个extend 是因为可能有多个元素要复制 比如(target, source1, source2,source3)
+   *
+   * @param target
+   * @param source
+   * @param deep
+   */
+    function extend(target, source, deep) {
+      for(var key in source) {
+        // 如果是深拷贝的话 有两种可能 一种是对象  另外一种是数组
+        if(deep && (isPlainObject(source[key]) || isArray(source[key]))) {
+          // 如果是对象的话
+          if(isPlainObject(source[key]), !isPlainObject(target[key]))
+            target[key] = {}
+
+          // 如果是数组的话 {a: 'b', b : [a, b]} =>source[b] => target[b] = [] => 递归
+          if(isArray(source[key]) && !isArray(target[key]))
+            target[key] = []
+          extend(target[key], source[key], deep) // => extend([], [a, b], true) => 此时就是浅拷贝了
+
+        // 如果不是深拷贝的话 就直接把source[key]的 value 复制到target[key]中去
+        } else if(source[key] !== void 0) target[key] = source[key]
+
+      }
+    }
+
+  /**
+   *
+   * @param target
+   */
+  $.extend = function (target) {
+    var deep,
+      args = [].slice.call(arguments, 1)
+    if($.type(target) == 'boolean') {
+      deep = target
+      target = args.shift()
+    }
+
+    args.forEach(function (source) {
+      extend(target, source, deep)
+    })
+
+    return target
+  }
 
 
   /**
