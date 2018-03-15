@@ -284,6 +284,13 @@ var Zepto = (function () {
   }
 
   /**
+   * 解析JSON
+   */
+  $.parseJSON = function () {
+    if(window.JSON) $.parseJSON = JSON.parse
+  }
+
+  /**
    * 判断obj是否是类数组
    *
    *
