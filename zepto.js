@@ -274,6 +274,16 @@ var Zepto = (function () {
   }
 
   /**
+   * 数组的过滤 返回过滤后的元素
+   * @param elements
+   * @param callback
+   * @returns {*}
+   */
+  $.grep = function (elements, callback) {
+    return [].filter.call(elements, callback)
+  }
+
+  /**
    * 判断obj是否是类数组
    *
    *
