@@ -361,6 +361,8 @@ var Zepto = (function () {
   }
 
 
+
+
   /**
    * 判断obj是否是类数组
    *
@@ -404,10 +406,60 @@ var Zepto = (function () {
 
   $.fn =  {
     concat : emptyArray.concat,
-    each : function () {},
-    map : function () {},
     hide: function () {
-    }
+    },
+    size : function () {
+      return this.length
+    },
+    get : function (idx) {
+      return idx === void 0 ? [].slice.call(this) : this[idx > 0 ? idx : idx + this.length]
+    },
+    toArray : function () {
+      // toArray = [].slice.call(this) ==> 跳到get的第一个判断条件
+      return this.get()
+    },
+    first : function () {
+      var el = this[0];
+      // 如果不是对象的话直接返回 否则包装成zepto 元素
+      return el && !isObject(el) ? el : $(el)
+    },
+    last: function () {
+      var el = this[this.length - 1]
+      return el && !isObject(el) ? el : $(el)
+    },
+    push : [].push,
+    sort : [].sort,
+    splice: [].splice,
+    indexOf: [].indexOf,
+    // slice因为返回的是数组所以要包装成zepto对象
+    slice: function () {
+      return $([].slice.call(this, arguments))
+    },
+    forEach: [].forEach,
+    each: function (callback) {
+      return [].every.call(function (el, index) {
+        // zepto把callback的顺序给调换了
+        return callback.call(el, index, el) !== false
+      })
+      // 返回当前可以供链式调用
+      return this 
+    },
+    map : function (fn) {
+      // $([1,2,3]).map(function (el, index) {
+      //
+      // })
+      // 因为map  已经实现了 而此时的map 需要实现的是
+      // this是zepto包裹的这个数组也就是[1,2,3]
+      $($.map(this,function (el, index) {
+        // zepto回调函数的参数的顺序有改变了
+        return fn.call(el, index, el)
+      }))
+    },
+    reduce: [].reduce,
+
+
+    
+
   }
 
   zepto.Z.prototype = Z.prototype = $.fn
