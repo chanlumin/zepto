@@ -360,9 +360,6 @@ var Zepto = (function () {
     return target
   }
 
-
-
-
   /**
    * 判断obj是否是类数组
    *
@@ -397,10 +394,38 @@ var Zepto = (function () {
     return elements
   }
 
+  /**
+   * matches  其实就是在当前的元素找对应的css选择器 获取 :checked之类
+   * @param element
+   * @param selector
+   * @returns {*}
+   */
+    zepto.matches = function (element, selector) {
+    if (!selector || !element || element.nodeType !== 1) return false
 
-  
+    // 浏览器兼容 如果存在则先调用它
+    var matchesSelector = element.match
+      || element.webkitMatchesSelector
+      || element.mozMatchesSelector
+      || element.oMatchesSelector
 
+    //
+    if(matchesSelector) return matchesSelector.call(element, selector)
 
+    var match , parent = element.parentNode,
+      temp = !parent
+    if(temp) {
+      parent = tempParent
+      parent.appendChild(element)
+    }
+
+    match = ~zepto.qsa(element, selector).indexOf(element)
+
+    // 如果不存在parent 那么到这里应该把append的element移除掉 以供下次使用
+    temp && tempParent.remove(element)
+
+    return match
+  }
 
   // 供matches使用 matches 的思路就是 找到父节点 querySelectorAll('') => 从父节点indexOf找子节点
   var tempParent = document.createElement('div')
@@ -490,33 +515,10 @@ var Zepto = (function () {
         return el[property]
       })
     },
-    matches: function (element, selector) {
-      if (!selector || !element || element.nodeType !== 1) return false
-
-
-      // 浏览器兼容 如果存在则先调用它
-      var matchesSelector = element.match
-        || element.webkitMatchesSelector
-        || element.mozMatchesSelector
-        || element.oMatchesSelector
-
-      //
-      if(matchesSelector) return matchesSelector.call(element, selector)
-
-      var match , parent = element.parentNode,
-        temp = !parent
-      if(temp) {
-        parent = tempParent
-        parent.appendChild(element)
-      }
-
-      match = ~zepto.qsa(element, selector).indexOf(element)
-
-      // 如果不存在parent 那么到这里应该把append的element移除掉 以供下次使用
-      temp && tempParent.remove(element)
-
-      return match
-    },
+    is : function (selector) {
+      //  判断第一元素和selector是否相等
+      return this.length > 0 && zepto.matches(this[0],selector)
+    }
 
 
 
