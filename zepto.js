@@ -477,6 +477,16 @@ var Zepto = (function () {
 
       // 如果当前是Zepto就转为数组 因为最后要转为数组的 不是的话直接把this传递进去就行了
       return [].concat.apply(zepto.isZ(this)? this.toArray() : this, args)
+    },
+    /**
+     * pluck采摘  取到某个属性  用map 来实现
+     * @param property
+     */
+    pluck: function (property) {
+      // 对map的每一个元素进行遍历 如果有元素有property就返回
+      return $.map(this,function (el) {
+        return el[property]
+      })
     }
 
 
