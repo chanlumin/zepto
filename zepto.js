@@ -456,6 +456,28 @@ var Zepto = (function () {
       }))
     },
     reduce: [].reduce,
+    eq: function (index) {
+      // 如果是-1的话 单独拿出来
+      // [1,2,3].slice[-2,-1] => 2  如果[1,2,3].slice[-1, 0]=> 空数组 所以-1单独出来
+      return index === -1 ? this.slice(index) : this.slice(index, index+1)
+    },
+    /**
+     * 添加元素到zepto对象 如果参数是一个数组 那么这个数组的元素将合并到Zepto对象集中去
+     * 因为返回的是一个数组
+     */
+    concat: function () {
+      var i , value,args= []
+
+      // 遍历arguments
+      for(var i = 0, length = arguments.length; i < length, i++) {
+        value = arguments[i]
+        // 因为返回的是一个数组 所以如果是Zepto对象也要转为数组
+        args[i] = zepto.isZ(value) ? $.toArray(value) : value
+      }
+
+      // 如果当前是Zepto就转为数组 因为最后要转为数组的 不是的话直接把this传递进去就行了
+      return [].concat.apply(zepto.isZ(this)? this.toArray() : this, args)
+    }
 
 
     
