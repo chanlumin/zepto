@@ -427,6 +427,31 @@ var Zepto = (function () {
     return match
   }
 
+  /**
+   * 获取一个元素节点的子节点
+   * @param element
+   * @returns {*}
+   */
+  function children(element) {
+    return 'children' in element ?
+       slice.call(element.children) : $.map(element.childNodes, function (node) {
+        if(node.nodeType === 1) {
+          return node
+        }
+      })
+  }
+
+  /**
+   * 如果有传入过滤的元素就调用filter
+   * @param nodes
+   * @param selector
+   * @returns {*}
+   */
+  function filter(nodes, selector) {
+    return selector == null ? $(node) : $(nodes).filter(selector)
+  }
+
+
   // 供matches使用 matches 的思路就是 找到父节点 querySelectorAll('') => 从父节点indexOf找子节点
   var tempParent = document.createElement('div')
 
@@ -586,9 +611,24 @@ var Zepto = (function () {
           return zepto.qsa(this, selector)
         })
       }
+    },
+    /**
+     * 判断当前对象是否有selector这个对象
+     * @param selector
+     */
+    has : function (selector) {
+      // filter 返回的是一个数组
+      return this.filter(function () {
+        // 如果是对象的话 就判断是否当前是否有包含selector  否则通过find找到的元素的size的数值有没有来filter元素
+        return isObject(selector) ? this.contains(this, selector) : $(this).find(selector).size()
+      })
+    },
+    children: function () {
+      return $(this.map(function () {
+        // 遍历当前所有的元素 返回由孩子节点组成的数组
+        return children(this)
+      }))
     }
-
-
 
 
 
