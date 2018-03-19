@@ -557,6 +557,35 @@ var Zepto = (function () {
       return $([].filter.call(this, function (el) {
         return zepto.matches(el, selector)
       }))
+    },
+    find : function (selector) {
+      var result, $this = this
+      // 1 如果没有传入选择器的话就返回给空的Z函数
+      if(!selector) {
+        result = $()
+      } else if(typeof selector === 'object') {
+        // 2 如果是一个对象的话 那么遍历object中的每个属性 看看父亲是否包含object中的这些元素
+        // filter 返回一个数组 chujanru
+        $(selector).filter(function () {
+          // this表示当前的node
+          var node = this
+
+          //  用some判断true还是false
+          return [].some.call($this, function (parent) {
+
+            // 如果包含的话 那么就证明此时selector中的一些 body中的一些dom元素
+            return $.contains(parent, node)
+          })
+        })
+      } else if(this.length === 1) {
+        // 其中this是父元素而selector是要选择的元素的字符串
+        result =  $(zepto.qsa(this[0], selector))
+      } else {
+        this.map(function (index, el) {
+          //  其中 this代表的是每一个map的元素
+          return zepto.qsa(this, selector)
+        })
+      }
     }
 
 
