@@ -447,7 +447,7 @@ var Zepto = (function () {
    * @param selector
    * @returns {*}
    */
-  function filter(nodes, selector) {
+  function filtered(nodes, selector) {
     return selector == null ? $(node) : $(nodes).filter(selector)
   }
 
@@ -640,6 +640,15 @@ var Zepto = (function () {
         // 遍历当前所有的元素 返回由孩子节点组成的数组
         return children(this)
       }))
+    },
+    /**
+     * 找到当前元素(可能是多个一样的元素)的父亲元素对应selector的指定元素
+     * @param selector
+     */
+    parent: function (selector) {
+      // 1 首先获取当前元素的父亲元素  每个基本的dom节点都有parentNode(需要去重 多个节点可能都是一样的父亲多个)
+      // 2 然后在这写父亲元素中取出selector指定的元素
+       return filtered(uniq(this.pluck(parentNode)),selector)
     }
 
 
