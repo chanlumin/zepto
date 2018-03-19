@@ -452,6 +452,18 @@ var Zepto = (function () {
   }
 
 
+  /**
+   * 去重的经典算法
+   * 利用filter过滤 第一次出现的话数组中的元素 indexOf(item) === index
+   * @param array
+   */
+  var uniq = function (array) {
+    return [].filter.call(array, function (el, index) {
+      return array.indexOf(el) == index
+    })
+  }
+
+
   // 供matches使用 matches 的思路就是 找到父节点 querySelectorAll('') => 从父节点indexOf找子节点
   var tempParent = document.createElement('div')
 
