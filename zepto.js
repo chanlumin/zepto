@@ -548,6 +548,15 @@ var Zepto = (function () {
       // 返回一个zepto对象的数组
       return $(nodes)
 
+    },
+    filter: function (selector) {
+      // 如果是函数的话 调用not 两次not 选出需要的元素
+      if(isFunction(selector)) this.not(this.not(selector))
+
+      // 2 直接filter 返回zepto对象的数组
+      return $([].filter.call(this, function (el) {
+        return zepto.matches(el, selector)
+      }))
     }
 
 
