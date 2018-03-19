@@ -496,7 +496,7 @@ var Zepto = (function () {
       var i , value,args= []
 
       // 遍历arguments
-      for(var i = 0, length = arguments.length; i < length, i++) {
+      for(i = 0, length = arguments.length; i < length; i++) {
         value = arguments[i]
         // 因为返回的是一个数组 所以如果是Zepto对象也要转为数组
         args[i] = zepto.isZ(value) ? $.toArray(value) : value
@@ -518,6 +518,36 @@ var Zepto = (function () {
     is : function (selector) {
       //  判断第一元素和selector是否相等
       return this.length > 0 && zepto.matches(this[0],selector)
+    },
+    /**
+     * 过滤出不匹配selector的元素集合
+     * @param selector
+     */
+    not : function (selector) {
+      var nodes = []
+      // 1. 如果selector是函数的话 那么遍历 如果函数条件不成立的话 就把它push进nodes里面去
+      if(isFunction(selector) && selector.call !== void 0) {
+        this.each(function (index) {
+          // 如果 函数条件不成立就是要提取的元素 把它push进this中去
+          if(!selector.call(this,index)) {
+            nodes.push(this)
+          }
+        })
+      } else {
+        // 如果是string类型的话 直接filter=>过滤出去需要exclude的元素 如果是类数组的
+        // 下面的 filter 其实是调用了 [].filter.call()
+        var excludes = typeof selector === 'string' ? this.filter(selector) :
+        likeArray(selector) && isFunction(selector.item) ? slice.call(selector) : $(selector)
+        this.forEach(function (el) {
+          // 不再excludes中的元素的话
+          if(excludes.indexOf(el) < 0) {
+            nodes.push(this)
+          }
+        })
+      }
+      // 返回一个zepto对象的数组
+      return $(nodes)
+
     }
 
 
