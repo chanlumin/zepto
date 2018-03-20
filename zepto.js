@@ -505,6 +505,17 @@ var Zepto = (function () {
 
   }
 
+  /**
+   * 如果arg是函数就在context执行上下文中调用他 否则直接返回
+   * @param context
+   * @param arg
+   * @param idx
+   * @param cls
+   */
+  function funcArg(context, arg, idx, cls) {
+    return isFunction(arg) ? arg.call(context, idx, cls) : arg
+  }
+
 
   // 供matches使用 matches 的思路就是 找到父节点 querySelectorAll('') => 从父节点indexOf找子节点
   var tempParent = document.createElement('div')
@@ -779,6 +790,6 @@ var Zepto = (function () {
   zepto.Z.prototype = Z.prototype = $.fn
   return $
 })()
-
+∂
 window.Zepto = Zepto
 window.$ === undefined && (window.$ = Zepto)
