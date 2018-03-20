@@ -666,6 +666,28 @@ var Zepto = (function () {
         }
       })
       return $(nodes)
+    },
+    /**
+     * $('h1').parents() => [<div#container>, <body>, <html>]
+     * 获取当前dom节点的所有的祖先元素
+     * 如果你入selector就会再进行过滤
+     * @param selector
+     */
+    parents : function (selector) {
+      var ancestor = [], nodes = this
+
+      // 最上面的跟节点的length是0 => Document.length = 0
+      while (nodes.length > 0) {
+        // 向上遍历map返回数组
+        nodes = $.map(nodes, function (node) {
+          if((node = node.parentNode) && !isDocument(node) && ancestor.indexOf(node) < 0) {
+            ancestor.push(node)
+          }
+          return node
+        })
+      }
+      // 如果有传入selector的话 那么从祖先元素中进行过滤
+      return filtered(ancestor, selector)
     }
     
 
