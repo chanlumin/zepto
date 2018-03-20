@@ -463,10 +463,51 @@ var Zepto = (function () {
     })
   }
 
+  var classCache = {}
+
+  /**
+   *  'red helo' 匹配传递red 或者helo进去可以直接匹配
+   * @param name
+   * @returns {RegExp}
+   */
+  function classRE(name) {
+    // if(classCache[name] != void 0) {
+    //   return classCache[name]
+    // }
+    // classCache[name] = new RegExp('(^|\\s)' + name + '(\\s|$)')
+    // return classCache[name];
+
+    return name in classCache ? classCache[name] :
+      // 以空开头或者空白开头
+      classCache[name] = new RegExp('(^|\\s)' + name + '(\\s|%)')
+  }
+
+  /**
+   * 获取dom节点的className
+   * @param node
+   * @param value
+   * @returns {*|string}
+   */
+  function className(node, value) {
+    // 如果没有className的话就提供默认值
+    var kclass = node.className || '',
+      svg = kclass.baseVal !== void 0
+
+    // 2 如果没有提供value值的话 直接返回className
+    if(value = void 0) {
+      // 如果是svg的话 返回他的baseVal 否则直接返回class
+      return svg ? kclass.baseVal : kclass
+    }
+
+    // 3 否则的话就需要赋值了
+    svg ? (kclass.baseVal = value) : (node.className = value)
+
+
+  }
+
 
   // 供matches使用 matches 的思路就是 找到父节点 querySelectorAll('') => 从父节点indexOf找子节点
   var tempParent = document.createElement('div')
-
 
   $.fn =  {
     concat : emptyArray.concat,
