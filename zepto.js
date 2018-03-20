@@ -688,6 +688,14 @@ var Zepto = (function () {
       }
       // 如果有传入selector的话 那么从祖先元素中进行过滤
       return filtered(ancestor, selector)
+    },
+    /**
+     * 找前一个兄弟 调用了pluck 内部调用了map获取当节点集合的所有兄弟节点
+     * @param selector
+     * @returns {jQuery|HTMLElement}
+     */
+    prev: function (selector) {
+      return $(this.pluck('previousElementSibling').filtered(selector || '*'))
     }
     
 
