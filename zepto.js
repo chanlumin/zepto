@@ -696,7 +696,30 @@ var Zepto = (function () {
      */
     prev: function (selector) {
       return $(this.pluck('previousElementSibling').filtered(selector || '*'))
+    },
+    /**
+     * 找下一个兄弟节点
+     * @param selector
+     * @returns {jQuery|HTMLElement}
+     */
+    next: function (selector) {
+      return $(this.pluck('nextElementSibling').filtered(selector || '*'))
+    },
+    /**
+     * 找到所有的兄弟节点
+     * 利用filter 和children和parentNode 实现
+     * @param seclector
+     * @returns {*}
+     */
+    siblings: function (seclector) {
+      return filtered(this.map(function (index, el) {
+        // 先找到父亲节点 调用children 回调函数 child不等于el本身 就可以找出兄弟节点了
+        [].filter.call(children(el.parentNode), function (child) {
+          return child !== el
+        })
+      }),seclector)
     }
+    
     
 
   }
