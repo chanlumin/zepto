@@ -759,7 +759,18 @@ var Zepto = (function () {
           return child !== el
         })
       }),seclector)
-    }
+    },
+    hasClass: function (name) {
+      if(!name) return false
+
+      // 遍历node集合 如果node集合里面的 this代表node集合
+      emptyArray.some.call(this, function (node) {
+        // 先获取node的className再进行正则判断
+        // 其中此处回调函数的this是classRE(name) 这是some的参数指定
+        return this.test(className(node))
+      }, classRE(name))
+    },
+
     
     
 
