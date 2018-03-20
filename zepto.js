@@ -649,10 +649,24 @@ var Zepto = (function () {
       // 1 首先获取当前元素的父亲元素  每个基本的dom节点都有parentNode(需要去重 多个节点可能都是一样的父亲多个)
       // 2 然后在这写父亲元素中取出selector指定的元素
        return filtered(uniq(this.pluck(parentNode)),selector)
+    },
+    closest: function (selector, context) {
+      // 1 初始化  如果selector是一个对象或者元素的话 那么就匹配给定的对象或者元素
+      var nodes = [], collection = typeof selector === 'object' && $(selector)
+      // 2 从当前的节点开始往上找
+      this.each(function (_,node) {
+        //
+        while (node && !(collection ? collection.indexOf(node) < 0 : zepto.matches(node, selector))) {
+          // 3 context 限定范围 node还没等于context并且还不是document节点 那么node =  parentNode 也就是父亲节点
+          node = node != context && !isDocument(node) && node.parentNode
+          if(node && nodes.indexOf(node) < 0) {
+            // 往上开始一致保存祖先节点
+            nodes.push(node)
+          }
+        }
+      })
+      return $(nodes)
     }
-
-
-
     
 
   }
