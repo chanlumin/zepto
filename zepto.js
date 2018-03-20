@@ -781,6 +781,34 @@ var Zepto = (function () {
         return this.test(className(node))
       }, classRE(name))
     },
+    addClass: function(name) {
+      // 1 如果没有name的话 就返回当前对象
+      if(!name) return this
+
+      this.each(function(index) {
+        // 1 如果没有className的话 直接return(这里属于优化)
+
+        if(!('className' in this)) return
+
+        var cls = className(this)
+        // 可能有调用回调函数
+        var newName = funcArg(this, name, index, cls)
+        var classList = []
+
+
+        // 要支持添加 'red blue' 这样的class
+        newName.split(/\s+/g).forEach(function (kclass) {
+          // if(!(kclass in cls)) {
+          //   classList.push(kclass)
+          // }
+          kclass.length && !this.hasClass(kclass) && classList.push(kclass)
+        }, this)
+
+        // 把字符串重新连接 然后赋值给node节点
+        className(this,cls + (cls ? " " : '') + classList.join(' '))
+      })
+
+  }
 
     
     
