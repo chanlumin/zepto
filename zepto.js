@@ -516,6 +516,18 @@ var Zepto = (function () {
     return isFunction(arg) ? arg.call(context, idx, cls) : arg
   }
 
+  /**
+   * 把驼峰化的转为 helloWorld => hello-world
+   * @param str
+   */
+  function dasherize(str) {
+    return str.replace(/::/g, '/') // 替换::=> /
+      .replace(/([A-Z]+)([A-Z][a-z])/g, '$1_$2') // 在连续的字母最后一个大写字母之前加入_
+      .replace(/([a-z]\d)([A-Z])/g,'$1_$2') // 在小写字母与大写字母之前插入
+      .replace(/_/g, '-')
+      .toLowerCase()
+  }
+
 
   // 供matches使用 matches 的思路就是 找到父节点 querySelectorAll('') => 从父节点indexOf找子节点
   var tempParent = document.createElement('div')

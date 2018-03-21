@@ -60,5 +60,11 @@ window.$ === undefined && (window.$ = Zepto)
 ```
 
 
-## 显示 隐藏
+## 获取dom元素的各种属性值
+
+> 如果直接通过dom.style.width => 获取到的只能是内联的属性值
+
+> 正确的获取方式是 getComputedStyle(dom, '').getPropertyValue('width')
+
+
 
