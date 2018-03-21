@@ -831,11 +831,27 @@ var Zepto = (function () {
           // 2 把cls根据name传入对应对值一个一个去掉 移除其实就是替换成空就行了
            cls = cls.replace(classRE(kclass),'')
         })
-
         // 3 在把移除之后的值再添加回去
         className(this, cls.trim())
       })
+    },
+    /**
+     * 切换class 有when的话就根据when来切换class 如果没有的话就根据是否有name这个class来进行切换
+     * @param name
+     * @param when
+     */
+    toggleClass: function (name, when) {
+      // 如果没有传入name的话 就直接返回当前的对象
+      if(!name) return this
 
+      var $this = $(this),
+        names = funcArg(this, name, index, className(this))
+
+      names.split(/\s+/).this.forEach(function(kclass) {
+        // 三元判断的第一个是判断是否有when还是没有when 有when的话直接根据when来判断
+        // 没有when的话就直接根据是否有kclass来进行class的切换
+        (when === undefined ? !$this.hasClass(kclass) : when) ? $this.addClass(kclass) : $this.removeClass(kclass)
+      })
     }
 
     
