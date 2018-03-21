@@ -808,7 +808,35 @@ var Zepto = (function () {
         className(this,cls + (cls ? " " : '') + classList.join(' '))
       })
 
-  }
+    },
+    removeClass: function(name) {
+      //  1. 基本参数判断 如果没有传入name的话 直接返回
+      if(!name) return
+
+      var cls = className(this)
+
+      /**
+       * 遍历dom节点
+       */
+      this.each(function (index, el) {
+        // 优化 如果么有className不做下面的 工作
+        if(!('className' in this)) {
+          return
+        }
+        // 如果什么都没传入 就把dom节点都所有class删除掉
+        if(name === void 0) return className(this, '')
+        // 把node的name取出来 顺便赋值为''
+        cls = className(this, '')
+        funcArg(this, name, index, cls).split(/\s+/).forEach(function (kclass) {
+          // 2 把cls根据name传入对应对值一个一个去掉 移除其实就是替换成空就行了
+           cls = cls.replace(classRE(kclass),'')
+        })
+
+        // 3 在把移除之后的值再添加回去
+        className(this, cls.trim())
+      })
+
+    }
 
     
     
