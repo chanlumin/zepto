@@ -924,6 +924,6 @@ var Zepto = (function () {
   zepto.Z.prototype = Z.prototype = $.fn
   return $
 })()
-∂
+
 window.Zepto = Zepto
 window.$ === undefined && (window.$ = Zepto)
