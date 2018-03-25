@@ -529,6 +529,25 @@ var Zepto = (function () {
   }
 
 
+  propMap = {
+    'tabindex' : 'tabIndex',
+    'readonly' : 'readOnly',
+    'for' : 'htmlFor',
+    'class' : 'className',
+    'maxlength' : 'maxLength',
+    'cellspacing' : 'cellSpacing',
+    'cellpadding' : 'cellPadding',
+    'rowspan' : 'rowSpan',
+    'usemap' : 'useMap',
+    'frameborder' : 'frameBorder',
+    'contenteditable': 'contentEditable'
+  }
+
+  function setAttribute(node, name, value) {
+    value == null ? node.removeAttribute(name) : node.setAttribute(name, value)
+  }
+
+
   // 供matches使用 matches 的思路就是 找到父节点 querySelectorAll('') => 从父节点indexOf找子节点
   var tempParent = document.createElement('div')
 
@@ -915,7 +934,65 @@ var Zepto = (function () {
     },
     css: function () {
 
+    },
+    /**
+     * pro 设置dom元素的属性 通过js 属性访问直接设置 而 attr是通过setAttribute
+     * @param name
+     * @param value
+     * @returns {*}
+     */
+    prop : function(name, value) {
+      // 1 优先获取propMap中的name的属性
+      name = propMap[name] || name
+
+       return (1 in arguments) ? this.each(function(index) {
+         this[name] = funcArg(this, value, index, this[name])
+       }) : (this[0] && this[0][name])
+    },
+    /**
+     * 删除属性只 只需要遍历 并且delete掉就可以了
+     * @param name
+     * @returns {*}
+     */
+    removeProp : function(name) {
+      name = propMap[name] || name
+      return this.each(function() {
+        delete this[name]
+      })
+    },
+    /**
+     * 也是设置属性值 不过是痛殴setAttribute来实现的
+     * @param name
+     * @param value
+     */
+    attr: function(name, value) {
+      // 1 如果只传入name那么 getAttribute
+      if(typeof  name == 'string' || !(1 in  arguments)) {
+        // 要获取Attribute的前提是DOM节点的NodeType shi 1
+        if(this[0] && this[0].nodeType === 1) {
+          result = this[0].getAttribute(name)
+          return result != null ? result : void 0
+        }
+        // 否则的话 含有两个参数
+      }  else {
+        // 遍历设置
+        this.each(function(index) {
+          // 如果不是元素节点的话 直接return
+          if(this.nodeType !== 1) return;
+
+          // 如果key value 是通过Object这个参数传入的话
+          if(isObject(name)) {
+            for(key in name) {
+              setAttribute(this, key, name[key])
+            }
+          } else {
+            // 1 . funcArg返回的其实就是参数 其实就是value index item
+            setAttribute(this, name, funcArg(this, value, index, this.getAttribute(name)))
+          }
+        })
+      }
     }
+
     
     
 
