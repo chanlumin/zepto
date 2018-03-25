@@ -864,8 +864,58 @@ var Zepto = (function () {
         // 没有when的话就直接根据是否有kclass来进行class的切换
         (when === undefined ? !$this.hasClass(kclass) : when) ? $this.addClass(kclass) : $this.removeClass(kclass)
       })
-    }
+    },
+    width: function(value) {
+      var offset, el = this[0]
+      // 1 如果没有value值的话 就直接返回width
+      if(value === undefined) {
+        if(isWindow(el)) {
+          // 如果是Window的话  就直接返回innderWidth
+          return el['innerWidth']
+        } else if(isDocument(el)) {
+          // 如果当前的元素是
+          return el.documentElement['scrollWidth']
+        } else {
+          // 其实offset获取的是getBoundingClientRect
+          offset = this.offset()
+          return offset['width']
+        }
+      } else {
+        this.each(function(index) {
+          // 对每一个元素进行宽度设置
+          el = $(this)
+          // 下面对width其实是调用本身对width  此时只走上面对if条件
+          el.css('width',funcArg(this, value, index,el.width()))
+        })
+      }
+    },
+    height: function(value) {
+      var offset, el = this[0]
+      if(value === void 0) {
+        if(isWindow(el)) {
+          return el['innerWidth']
+        } else if(isDocument(el)) {
+          return el.documentElement['scrollWidth']
+        } else {
+          offset = this.offset()
+          return offset['width']
+        }
+      } else {
+        this.each(function(index) {
+          el = $(this)
+          el.css('width', funcArg(this, value, index, el.width()))
+        })
+      }
+    },
+    /**
+     * offset是=> getBoundingClientRect
+     */
+    offset: function() {
 
+    },
+    css: function () {
+
+    }
     
     
 

@@ -660,10 +660,19 @@ var Zepto = (function() {
            this[0].value)
       }
     },
+    /**
+     * 获取当前元素相对于documentd的位置 返回的对象含有top, left, width, height
+     * 当这个对象含 {left:xxx, top:xxx} 这些属性时候那么 对集合中的每个元素进行相对于document的定位
+     * @param coordinates
+     * @returns {*}
+     */
     offset: function(coordinates){
+      // 如果传入需要设置的坐标 那么
       if (coordinates) return this.each(function(index){
         var $this = $(this),
+            // $this.offset() => 获取当前的元素的offset() => get的作用
             coords = funcArg(this, coordinates, index, $this.offset()),
+            // 获取他有定位的父亲的offset=> pageXOffset和pageYOffset
             parentOffset = $this.offsetParent().offset(),
             props = {
               top:  coords.top  - parentOffset.top,
@@ -685,33 +694,48 @@ var Zepto = (function() {
       }
     },
     css: function(property, value){
+      // 如果只传入一个参数 需要做的就是返回dom对应property元素
       if (arguments.length < 2) {
+        // 获取需要设置class的元素
         var element = this[0]
+        // property有两种类型1中是字符串  另外一种是数组
         if (typeof property == 'string') {
+          // 如果操作的对象不存在的话 直接return
           if (!element) return
+          // 优先调用element.style[xxx] 如果获取不到 再调用getComputedStyle=> 去获取getPropertyValue
           return element.style[camelize(property)] || getComputedStyle(element, '').getPropertyValue(property)
+          // 如果是数组的话就遍历这个 property数组 返回的属性值也是一个数组 用props这个数组来记录
         } else if (isArray(property)) {
           if (!element) return
           var props = {}
+          // 因为需要遍历 先获取computedStyle 可以优化计算时间
           var computedStyle = getComputedStyle(element, '')
           $.each(property, function(_, prop){
             props[prop] = (element.style[camelize(prop)] || computedStyle.getPropertyValue(prop))
           })
+          // 返回propsp
           return props
         }
       }
+      // 当传入的元素大于1也就是2的时候
 
       var css = ''
       if (type(property) == 'string') {
+
+        // 如果value值为"", null, undefined的时候就可以直接删除了
         if (!value && value !== 0)
           this.each(function(){ this.style.removeProperty(dasherize(property)) })
         else
+          // 如果是width = 1 是需要加px 才可能有作用的 所以需要一个maybeAddPx这个函数
           css = dasherize(property) + ":" + maybeAddPx(property, value)
       } else {
+        // 如果传入的property和value是通对象传递进来的时候
         for (key in property)
+          // 此处的property[key]=> 也就是value是null 或者undefined 获取"" 要把对应的key值删除掉
           if (!property[key] && property[key] !== 0)
             this.each(function(){ this.style.removeProperty(dasherize(key)) })
           else
+            // 否则通过凭借cssText => 通过设置cssText来设置属性
             css += dasherize(key) + ':' + maybeAddPx(key, property[key]) + ';'
       }
 
